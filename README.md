@@ -9,7 +9,7 @@
 * [📘 How to use](https://zenn.dev/zenn/articles/zenn-cli-guide)
   * How to create new article
     ```shell
-    $ npx zenn new:article
+    $ npx zenn new:article --slug <article_name>
     ```
   * How to preview
     ```shell
