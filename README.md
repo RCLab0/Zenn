@@ -11,3 +11,9 @@
     ```shell
     $ npx zenn new:article
     ```
+  * How to preview
+    ```shell
+    $ npx zenn preview
+    ```
+
+* [Enabled Markdowns](https://zenn.dev/zenn/articles/markdown-guide)
