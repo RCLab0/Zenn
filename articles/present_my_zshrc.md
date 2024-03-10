@@ -8,18 +8,17 @@ published: false
 
 RCLab です。便利な alias などを適当にガンガン追加すると、.zshrc がぐちゃぐちゃになった経験ありませんか？今回は改めてその設定を整理するとともに、意味などを掘り下げていきたいと思います。
 
-# 忙しい人のために
+## 忙しい人のために
 https://github.com/RCLab0/zsh_config
-今回の
+今回整備した設定を GitHub 上で公開していますので、どなたでもお使いください。
 
-# 要点
+## 要点
 項目毎に設定をまとめておけば散らからないはずだという思想の元、設定ファイルを以下のようなディレクトリ構造で設置し、
 ```shell
 $ tree
 /User/rclab
 ├── .zsh
 │   ├── directory.zsh
-│   ├── fzf.zsh
 │   ├── git.zsh
 │   └── history.zsh
 └── .zshrc
