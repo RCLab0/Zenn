@@ -3,7 +3,7 @@ title: "zsh を好みにカスタマイズする"
 emoji: "🖥️"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["zsh", "terminal", "shell", "git"]
-published: false
+published: true
 ---
 
 RCLab です。便利な alias などを適当にガンガン追加すると、.zshrc がぐちゃぐちゃになった経験ありませんか？今回は改めてその設定を整理するとともに、意味などを掘り下げていきたいと思います。
