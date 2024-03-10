@@ -45,3 +45,21 @@ https://github.com/RCLab0/zsh_config/blob/main/.zsh/history.zsh
 :::message
 一応動作検証はしましたが、狙った挙動になってるかやや自信がなく、要確認
 :::
+
+### git.zsh
+https://github.com/RCLab0/zsh_config/blob/main/.zsh/git.zsh
+1. git-completions を初期設定時に自動で入れてくれる
+   `$HOME/.zsh/git-completions` の存在確認を行い、なければ保管に必要なスクリプトを落として保存する優れもの
+   ```shell:~/.zsh/git.zsh 該当箇所
+   COMPLATION_DIR=$HOME/.zsh/git-completions
+   if [ ! -d $COMPLATION_DIR ]; then
+     mkdir $COMPLATION_DIR
+     # CAUTION 外部サイトを使っているので、動かなくなる可能性あり
+     curl -o $COMPLATION_DIR/git-completion.bash https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
+     curl -o $COMPLATION_DIR/_git https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.zsh
+   fi
+   ```
+1. プロンプトを好みのスタイルに編集
+   これは git のため設定というよりはシステム全体の設定な気もしており、 `.zshrc` に書いた方がいいかもと今は思っています。
+   
+の 2点が特にお気に入りです！登録されている alias の確認コマンドはおまけですね。
