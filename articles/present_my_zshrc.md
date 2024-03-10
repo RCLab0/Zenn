@@ -60,6 +60,7 @@ https://github.com/RCLab0/zsh_config/blob/main/.zsh/git.zsh
    fi
    ```
 1. プロンプトを好みのスタイルに編集
+   ![](/images/present_zsh_config/prompt.png)
    これは git のため設定というよりはシステム全体の設定な気もしており、 `.zshrc` に書いた方がいいかもと今は思っています。
    
 の 2点が特にお気に入りです！登録されている alias の確認コマンドはおまけですね。
