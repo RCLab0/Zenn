@@ -32,3 +32,16 @@ for conf in "$HOME/.zsh/"*.zsh; do
 done
 unset conf
 ```
+せっかくなので、各種設定ファイルも除いてみましょう。
+
+### directory.zsh
+```shell:~/.zsh/directory.zsh
+# cd した際に pushd コマンドも同時に実行するような振る舞い
+# cd - [tab] で terminal 起動から移動したディレクトリを一望でき、対応する数字を入力することですぐに移動できる
+setopt autopushd
+
+# pushd (directory stack) に同じ directory を重複させない
+setopt pushdignoredups
+```
+`cd -` で直前にいたディレクトリにしか戻れないの不便じゃない？不便ですよね！それを解決してくれるのが `autopushd`！`cd` コマンドを発行した際に自動的に `pushd` してくれるみたい。
+恥ずかしながら `pushd` コマンドをこの時まであまり理解していませんでした。思わぬところから解決が降ってきて知識整備って大事だなって思いました。
