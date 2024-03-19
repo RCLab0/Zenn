@@ -3,7 +3,7 @@ title: "Ubuntu に ansible を用いて MySQL をインストールしよう"
 emoji: "👏"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["Vagrant", "ansible", "MySQL", "apt", "Ubuntu"]
-published: false
+published: true
 ---
 
 RCLab です。皆さんはインフラの構築をどのようなツールを用いて行なっていますか？個人開発を爆速で進めるという意味では apt で install して、 vi で config を編集すれば十分だと思いますが、折角なので職場で使っている Ansible というツールを深掘りしたく、個人開発でも使ってみることにしました。作業メモは脚注[^1]をご覧ください。
