@@ -88,3 +88,48 @@ mysqld_config:
 $ ansible-playbook ./playbooks/local.yml 
 ```
 を実行。これで完了です。
+
+## MySQL の Install
+まず、インストールしたいパッケージを知る必要があります。 mysql を入れたいので、サーバーに ssh して以下のコマンドを打ちました。
+```shell
+$ apt search mysql | grep mysql
+...
+mysql-server/jammy-updates,jammy-security 8.0.36-0ubuntu0.22.04.1 all
+...
+```
+目的のパッケージになります。`spt show mysql-server` などして、内容を確認するとなおいいでしょう。では `apt install mysql-server` に対応する ansible task を書いていきます。
+```yaml:./roles/mysql/tasks/main.yml
+---
+- name: Install MySQL
+  apt:
+    name: mysql-server
+    state: present
+    update_cache: yes
+```
+この時点で `ansible-playbook ./playbook/local.yml` を実行します。
+```shell
+$ ansible-playbook ./playbooks/local.yml
+
+PLAY [local playbook] ************************************************************************
+
+TASK [Gathering Facts] ***********************************************************************
+ok: [rclab-local]
+
+TASK [mysql : Install MySQL] *****************************************************************
+changed: [rclab-local]
+
+PLAY RECAP ***********************************************************************************
+rclab-local            : ok=1    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+```
+早速確認しましょう。
+```shell
+vagrant@rclab-local:~$ mysql --version
+mysql  Ver 8.0.36-0ubuntu0.22.04.1 for Linux on x86_64 ((Ubuntu))
+vagrant@rclab-local:~$ ps aux | grep mysql
+mysql       7938 12.0 19.4 1783752 393948 ?      Ssl  13:03   0:01 /usr/sbin/mysqld
+vagrant     8019  0.0  0.1   6476  2240 pts/0    S+   13:03   0:00 grep --color=auto mysql
+vagrant@rclab-local:~$ systemctl is-enabled mysql
+enabled
+```
+インストールできているようです！ついでに起動・再起動時に起動の設定までしているようですね！
+
