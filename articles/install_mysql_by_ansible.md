@@ -299,3 +299,65 @@ mysql>
 ```
 あれ、変更されてませんね。当然、設定の反映には再起動が必要です。
 
+## 再起動を handle する
+:::message alert
+これをすると設定変更時に mysql が自動で再起動してしまいます。
+サービスで運用する際には必ずメンテナンスに入れるなどしてから行うのが良いと思います。
+:::
+ansible の tasks で変更が生じた場合のみに発火するイベントを登録できます。それが、`notify` と `handlers/main.yml` で表現できるのでやって見ます。`./roles/mysql/tasks/main.yml` に以下のような変更を加えると、
+```diff yaml:./roles/mysql/tasks/main.yml
+ ...
+ - name: configure mysqld.cnf
+   template:
+     src: mysqld.cnf.j2
+     dest: "{{ mysqldcnf_path }}"
++  notify: Restart MySQL
+```
+`configure mysqld.cnf` が changed になった際に `./roles/mysql/handlers/main.yml` に記述されている `Restart MySQL` タスクが発火します。
+```yaml:./roles/mysql/handlers/main.yml
+---
+- name: Restart MySQL
+  systemd:
+    name: mysql
+    state: restarted
+    enabled: true
+```
+実際にやってみましょう。cnf ファイルに変更がなければ発火しないので、`defaults/main.yml` を弄ってみます。
+```diff yaml:./roles/mysql/defaults/main.yml
+ ... 
+ mysqld_config: 
+   user: mysql
+   log_error: /var/log/mysql/error.log
++   slow_query_log_file: /var/log/mysql/slow_query.log
++   long_query_time: 0.1 # default 10
+   # character_set_server: utf8mb4 # default: utf8mb4
+   collation_server: utf8mb4_general_ci # default: utf8mb4_0900_ai_ci
+```
+slow query に関する設定を足してみて、ansible を流し込むと。
+```shell
+$ ansible-playbook ./playbooks/local.yml
+
+PLAY [local playbook] ***********************************************************************************
+
+TASK [Gathering Facts] **********************************************************************************
+ok: [mochibell-local]
+
+TASK [mysql : Install MySQL] ****************************************************************************
+ok: [mochibell-local]
+
+TASK [mysql : Set password of root user] ****************************************************************
+ok: [mochibell-local]
+
+TASK [mysql : configure mysqld.cnf] *********************************************************************
+changed: [mochibell-local]
+
+RUNNING HANDLER [mysql : Restart MySQL] *****************************************************************
+changed: [mochibell-local]
+
+PLAY RECAP **********************************************************************************************
+mochibell-local            : ok=5    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+```
+handler が発火して、無事設定を反映することができました。
+
+
+[^1]: [作業メモ / Zend Scrap](https://zenn.dev/rclab/scraps/8a184f283d0b70)
