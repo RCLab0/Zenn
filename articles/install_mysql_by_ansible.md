@@ -209,3 +209,93 @@ Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 mysql>
 ```
 
+## 設定を流し込む
+最後に `/etc/mysql/mysql.conf.d/mysqld.cnf` を編集します。python のテンプレートエンジンである jinja2 を用いて記述します。
+```jinja2:./roles/mysql/templates/mysqld.cnf.j2
+[client]
+{% for _key, _value in client_config | dictsort(by='key') %}
+{%   if not (_value == None or _value == omit) %}
+{{     _key }} = {{ _value }}
+{%   endif %}
+{% endfor %}
+
+[mysqld]
+{% for _key, _value in mysqld_config | dictsort(by='key') %}
+{%   if not (_value == None or _value == omit) %}
+{{     _key }} = {{ _value }}
+{%   endif %}
+{% endfor %}
+```
+`./roles/mysql/tasks/main.yml` に
+```yaml:./roles/mysql/tasks/main.yml
+...
+- name: configure mysqld.cnf
+  template:
+    src: mysqld.cnf.j2
+    dest: "{{ mysqldcnf_path }}"
+```
+上記を追記して、 `./roles/mysql/defaults/main.yml` に `client_config`、`mysqld_config`、`mysqldcnf_path` を下記のように設定します。
+```yml:./roles/mysql/defaults/main.yml
+---
+root_user_password: random_string # 8文字以上、大文字、数字、小文字、特殊文字を1文字以上含める
+
+# default of mysql
+mysqldcnf_path: /etc/mysql/mysql.conf.d/mysqld.cnf
+client_config: {}
+mysqld_config: 
+  user: mysql
+  log_error: /var/log/mysql/error.log
+  collation_server: utf8mb4_general_ci # default: utf8mb4_0900_ai_ci
+```
+最後に ansible を流し込むと
+```shell
+$ ansible-playbook ./playbooks/local.yml
+
+PLAY [local playbook] **********************************************************************************************************************
+
+TASK [Gathering Facts] *********************************************************************************************************************
+ok: [rclab-local]
+
+TASK [mysql : Install MySQL] ***************************************************************************************************************
+ok: [rclab-local]
+
+TASK [mysql : Set password of root user] ***************************************************************************************************
+ok: [rclab-local]
+
+TASK [mysql : configure mysqld.cnf] ********************************************************************************************************
+changed: [rclab-local]
+
+PLAY RECAP *********************************************************************************************************************************
+rclab-local            : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0 
+```
+設定できました🎉
+
+```shell
+vagrant@rclab-local:~$ cat /etc/mysql/mysql.conf.d/mysqld.cnf
+[client]
+
+[mysqld]
+character_set_server = utf8mb4
+collation_server = utf8mb4_general_ci
+log_error = /var/log/mysql/error.log
+user = mysql
+```
+しかし、実際に MySQL に接続して確認してみると
+```shell
+vagrant@mochibell-local:~$ mysql -uroot -p
+Enter password:
+...
+mysql> show variables like "col%";
++----------------------+--------------------+
+| Variable_name        | Value              |
++----------------------+--------------------+
+| collation_connection | utf8mb4_0900_ai_ci |
+| collation_database   | utf8mb4_0900_ai_ci |
+| collation_server     | utf8mb4_0900_ai_ci |
++----------------------+--------------------+
+3 rows in set (0.00 sec)
+
+mysql>
+```
+あれ、変更されてませんね。当然、設定の反映には再起動が必要です。
+
