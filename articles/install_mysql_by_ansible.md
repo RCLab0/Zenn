@@ -133,3 +133,79 @@ enabled
 ```
 インストールできているようです！ついでに起動・再起動時に起動の設定までしているようですね！
 
+## root user の password を変える
+MySQL を install した後にまずすることといえば、root ユーザーの password 変更ですよね？それも ansible でやっちゃいましょう！
+```yaml:./roles/mysql/tasks/main.yml
+...
+- name: Set password of root user
+  mysql_user:
+    name: root # the user name in order to change settings.
+    password: "{{ root_user_password }}" # change password to this valuable.
+    check_implicit_admin: true
+    login_user: root
+    login_password: "{{ root_user_password }}"
+    state: present # do delete user change state to absent.
+```
+ansible を流し込みます
+```shell
+$ ansible-playbook ./playbooks/local.yml
+...
+TASK [mysql : Set password of root user] *****************************************************
+fatal: [mochibell-local]: FAILED! => {"changed": false, "msg": "A MySQL module is required: for Python 2.7 either PyMySQL, or MySQL-python, or for Python 3.X mysqlclient or PyMySQL. Consider setting ansible_python_interpreter to use the intended Python version."}
+...
+```
+エラーで落ちてしましました。ansible で 実現するには `PyMySQL` が必要なようです。
+```shell
+$ apt search mysql | grep mysql
+...
+python3-pymysql/jammy 1.0.2-1ubuntu1 all
+...
+```
+これっぽいですね。早速 install できるように task: `Install MySQL` を編集しましょう
+```diff yaml:./roles/mysql/tasks/main.yml
+ ---
+ - name: Install MySQL
+   apt:
++    name: [mysql-server, python3-pymysql]
+-    name: mysql-server
+     state: present
+     update_cache: yes
+```
+もう一度、ansible を流し込みます。
+
+```shell
+$ ansible-playbook ./playbooks/local.yml
+
+PLAY [local playbook] **********************************************************************************************************************
+
+TASK [Gathering Facts] *********************************************************************************************************************
+ok: [rclab-local]
+
+TASK [mysql : Install MySQL] ***************************************************************************************************************
+changed: [rclab-local]
+
+TASK [mysql : Set password of root user] ***************************************************************************************************
+changed: [rclab-local]
+
+PLAY RECAP *********************************************************************************************************************************
+rclab-local            : ok=1    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0 
+```
+流れました！これで root password も変更できました！
+```shell
+vagrant@rclab-local:~$ mysql -uroot -p
+Enter password:
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 9
+Server version: 8.0.36-0ubuntu0.22.04.1 (Ubuntu)
+
+Copyright (c) 2000, 2024, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql>
+```
+
