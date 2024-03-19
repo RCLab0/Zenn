@@ -151,7 +151,7 @@ ansible を流し込みます
 $ ansible-playbook ./playbooks/local.yml
 ...
 TASK [mysql : Set password of root user] *****************************************************
-fatal: [mochibell-local]: FAILED! => {"changed": false, "msg": "A MySQL module is required: for Python 2.7 either PyMySQL, or MySQL-python, or for Python 3.X mysqlclient or PyMySQL. Consider setting ansible_python_interpreter to use the intended Python version."}
+fatal: [rclab-local]: FAILED! => {"changed": false, "msg": "A MySQL module is required: for Python 2.7 either PyMySQL, or MySQL-python, or for Python 3.X mysqlclient or PyMySQL. Consider setting ansible_python_interpreter to use the intended Python version."}
 ...
 ```
 エラーで落ちてしましました。ansible で 実現するには `PyMySQL` が必要なようです。
@@ -282,7 +282,7 @@ user = mysql
 ```
 しかし、実際に MySQL に接続して確認してみると
 ```shell
-vagrant@mochibell-local:~$ mysql -uroot -p
+vagrant@rclab-local:~$ mysql -uroot -p
 Enter password:
 ...
 mysql> show variables like "col%";
@@ -340,22 +340,22 @@ $ ansible-playbook ./playbooks/local.yml
 PLAY [local playbook] ***********************************************************************************
 
 TASK [Gathering Facts] **********************************************************************************
-ok: [mochibell-local]
+ok: [rclab-local]
 
 TASK [mysql : Install MySQL] ****************************************************************************
-ok: [mochibell-local]
+ok: [rclab-local]
 
 TASK [mysql : Set password of root user] ****************************************************************
-ok: [mochibell-local]
+ok: [rclab-local]
 
 TASK [mysql : configure mysqld.cnf] *********************************************************************
-changed: [mochibell-local]
+changed: [v-local]
 
 RUNNING HANDLER [mysql : Restart MySQL] *****************************************************************
-changed: [mochibell-local]
+changed: [rclab-local]
 
 PLAY RECAP **********************************************************************************************
-mochibell-local            : ok=5    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+rclab-local            : ok=5    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 ```
 handler が発火して、無事設定を反映することができました。
 
