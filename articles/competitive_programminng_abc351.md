@@ -3,7 +3,7 @@ title: "AtCoder ABC 351 参加してみた"
 emoji: "📝"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["javascript", "AtCoder"]
-published: false
+published: true
 ---
 
 RCLab です。数年ぶりに競技プログラミングやってみたいなと思ったので、AtCoder に参加しました。
