@@ -194,7 +194,7 @@ Vagrant.configure("2") do |config|
   end
 end
 ```
-色々と怒られるので、
+`vagrant up` とすると色々と怒られるので、
 ```
  ~ $ vagrant plugin install vagrant-hostmanager
  ~ $ sudo apt install libarchive-tools
