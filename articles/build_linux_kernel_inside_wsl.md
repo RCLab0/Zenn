@@ -21,8 +21,16 @@ WARNING: The vboxdrv kernel module is not loaded. Either there is no module
 
          You will not be able to start VMs until this problem is fixed.
 7.1.6r167084
+ ~ $ 
 ```
 このような WARNING が出てしまい、うまく動作しませんでした。それを解消する方法を調べていたところ、[Running Virtualbox+Vagrant inside of WSL2 with nested virtualization](https://askalice97.medium.com/running-virtualbox-inside-of-wsl2-with-nested-virtualization-bde85046fe8d) という記事を見つけたので、実際にやってみようとなった運びです。
+作業開始前の kernel は
+```
+ ~ $ uname -r
+5.15.167.4-microsoft-standard-WSL2
+ ~ $
+```
+となってます。
 
 ## 作業
 1. [WSL Linux Kernel](https://github.com/microsoft/WSL2-Linux-Kernel) を WLS 内で clone
@@ -70,6 +78,7 @@ WARNING: The vboxdrv kernel module is not loaded. Either there is no module
      ~/WSL2-Linux-Kernel $ 
     ```
 1. WLS がこの kernel を用いるように .wslconfig を編集
+    windows 側に vmlinux をコピーし、それを kernel として用いるように .swlconfig に記載する
     ```zsh
      ~/WSL2-Linux-Kernel $ cp vmlinux /mnc/c/Users/<user_name>
      ~/WSL2-Linux-Kernel $ cd ~
