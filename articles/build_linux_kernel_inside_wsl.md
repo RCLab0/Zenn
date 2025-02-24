@@ -10,7 +10,7 @@ published: true
 RCLab です。今回はソースからビルドした Linux kernel を WSL 環境で使えるようになるまでをまとめました。
 
 ## きっかけ
-職場では VirtualBox + Vagrant の環境で開発を進めている拙著ですが、わけあって windows で開発をすることになった後輩ができました。結果、WSL 上で VirtualBox がうまく動作せず、環境構築が進まなくなってしまいました。VirtualBox をインストールし、その動作を確認するも
+職場では VirtualBox + Vagrant の環境で開発を進めている筆者ですが、わけあって windows で開発をすることになった後輩ができました。結果、WSL 上で VirtualBox がうまく動作せず、環境構築が進まなくなってしまいました。VirtualBox をインストールし、その動作を確認するも
 ```zsh
  ~ $ VBoxManage --version
 WARNING: The vboxdrv kernel module is not loaded. Either there is no module

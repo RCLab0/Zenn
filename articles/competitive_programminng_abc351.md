@@ -36,7 +36,7 @@ Main(require("fs").readFileSync("/dev/stdin", "utf8"))
 ```js
 const { log } = require("console")
 
-function Main(input) {
+function Main(input) {ｌ
     let rules = input.split("\n")
     const N = parseInt(rules[0])
 
