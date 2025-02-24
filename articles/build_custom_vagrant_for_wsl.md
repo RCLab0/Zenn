@@ -3,7 +3,7 @@ title: "vagrant + VirtualBox の環境を WSL 上に作ろう！"
 emoji: "📦"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["VirtualBox", "Vagrant", "WSL"]
-published: false
+published: true
 ---
 
 RCLab です。WSL + VirtualBox + Vagrant の環境構築に挑んでいます。[前回の記事](https://zenn.dev/rclab/articles/build_linux_kernel_inside_wsl)で Linux kernel を build することで VirtualBox の WARNING が出ないところまで進めたので、今回は vagrant の provisioner として、VirtualBox を使えるようにインストールしていきます。
